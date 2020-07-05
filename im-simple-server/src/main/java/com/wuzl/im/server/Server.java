@@ -72,6 +72,6 @@ public class Server {
         }
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
-        logger.info("steelIm服务成功关闭");
+        logger.info("Im服务成功关闭");
     }
 }

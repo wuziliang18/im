@@ -1,4 +1,4 @@
-package com.wuzl.im.server.handler.coder;
+package com.wuzl.im.client;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
@@ -11,20 +11,14 @@ import com.wuzl.im.common.message.OutMessage;
 import com.wuzl.im.common.security.AesUtil;
 import com.wuzl.im.common.util.Bytes;
 import com.wuzl.im.common.util.ZipUtils;
-import com.wuzl.im.server.manager.TcpClientManager;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
-/**
- * 类ImMessageEncoder.java的实现描述：编码器
- * 
- * @author ziliang.wu 2017年3月16日 下午2:23:15
- */
 @Sharable
-public class ImMessageEncoder extends MessageToMessageEncoder<Object> {
+public class ClientEncoder extends MessageToMessageEncoder<Object> {
 
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, List<Object> out) throws Exception {
@@ -45,7 +39,7 @@ public class ImMessageEncoder extends MessageToMessageEncoder<Object> {
         }
         if (header.isEncrypt()) {
             // 加密
-            byte[] secretKey = TcpClientManager.getSecretKeyByChannel(ctx.channel());
+            byte[] secretKey = ctx.channel().attr(ClientHandler.SECRET_INFO_KEY).get();
             if (secretKey != null) {
                 bodyBytes = AesUtil.encrypt(bodyBytes, secretKey);
             } else {
